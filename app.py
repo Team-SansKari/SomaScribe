@@ -71,8 +71,8 @@ async def run_suggest_next_question(payload: SuggestNextQuestionRequest):
             ]
         }
 
-        OUTPUT Example : {
-      "result": {
+        Output Example : {
+        "result": {
         "next_question": "Have you thought about how you might act on these thoughts, or if you have a plan?",
         "goto_next_assessment": false,
         "unlikely_depression": false,
