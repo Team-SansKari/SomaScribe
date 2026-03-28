@@ -116,6 +116,29 @@ def build_transcript(result: dict) -> list[dict]:
 
 @app.post("/transcribe")
 async def transcribe(audio: UploadFile = File(...)):
+    """
+      Output Example : {
+        "conversation": [
+            {
+            "role": "doctor",
+            "content": "I don't know where the question, I don't know where the song is."
+            },
+            {
+            "role": "patient",
+            "content": "Can I ask you a question, the first one? Right, what is the worst thing about being young?"
+            },
+            {
+            "role": "doctor",
+            "content": "Well, you get lots of homework. It's also pretty, they're like in the middle, like in school, like in the middle of bad and good. No. What is the worst thing about being old?"
+            },
+            {
+            "role": "patient",
+            "content": "Not being able to do things that you could do when you were young."
+            },
+        ]
+    }
+    """
+
     # Validate file type
     if not audio.content_type.startswith("audio/"):
         raise HTTPException(400, "File must be audio")
@@ -183,6 +206,7 @@ def analyze_symptoms(payload: AnalyzeSymptomsRequest):
             {"role": "patient", "content": "No, none of those."}
         ]
     }
+
     Output Example : {
     "result": {'possible_depression': True, 'symptom_phrases': ['splitting headache', 'My neck and shoulders are constantly stiff and sore.', 'my chest feels really tight', "I feel exhausted all day even when I haven't done anything at all.", "I've been sweating a lot", 'My stomach has been bloated a lot.', 'My hands and feet often go numb or get pins and needles.', 'my heart has been pounding', 'I keep getting nauseous.', "I feel like there's a lump stuck in my throat when I try to swallow.", 'I also feel dizzy quite often', 'sometimes the room starts spinning.', 'this awful bitter taste in my mouth all the time.', 'my whole body just feels so heavy'], 'symptoms': ['Severe headaches', 'Pain or tension in your neck and shoulders', 'Pain in the chest or heart', 'Lack of energy (weakness) much of the time', 'Sweating a lot', 'Pressure or tightness on your chest or heart', 'Ache or discomfort in the abdomen', 'Hands or feet having pins and needles or going numb', 'Awareness of palpitations (heart pounding)', 'Indigestion', 'Stomach felt swollen or bloated', 'Feeling tired, even when not working', 'Feeling sick in the stomach (nausea)', 'Difficulty in swallowing, as if there was a lump in your throat', 'Feeling giddy or dizzy', 'Bitter taste in your mouth', 'Whole body felt heavy'], 'clusters_with_symptoms': ['Head', 'Chest', 'Fatigue', 'Panic', 'Abdomen', 'Frequency', 'Globus']}
     }
@@ -216,37 +240,37 @@ class GetProtocolRequest(BaseModel):
 @app.post("/api/suggest-next-question")
 async def run_suggest_next_question(payload: SuggestNextQuestionRequest):
     """
-            Input Example : {
-          "assessment_number": 1 OR 2 OR 3,
-          "conversation": [
-                {
-                    "role": "doctor",
-                    "content": "Have you had any thoughts of harming yourself or ending your life?"
-                },
-                {"role": "patient", "content": "No, never."},
-                {
-                    "role": "doctor",
-                    "content": "Are you currently using alcohol or any other substances regularly?"
-                },
-                {
-                    "role": "patient",
-                    "content": "I have the occasional drink but nothing excessive."
-                },
-                {
-                    "role": "doctor",
-                    "content": "Have you experienced any hallucinations, severe anxiety, or significant memory problems?"
-                },
-                {"role": "patient", "content": "No, none of those."}
-            ]
-        }
+    Input Example : {
+      "assessment_number": 1 OR 2 OR 3,
+      "conversation": [
+            {
+                "role": "doctor",
+                "content": "Have you had any thoughts of harming yourself or ending your life?"
+            },
+            {"role": "patient", "content": "No, never."},
+            {
+                "role": "doctor",
+                "content": "Are you currently using alcohol or any other substances regularly?"
+            },
+            {
+                "role": "patient",
+                "content": "I have the occasional drink but nothing excessive."
+            },
+            {
+                "role": "doctor",
+                "content": "Have you experienced any hallucinations, severe anxiety, or significant memory problems?"
+            },
+            {"role": "patient", "content": "No, none of those."}
+        ]
+    }
 
-        Output Example : {
+    Output Example : {
         "result": {
         "next_question": "Have you thought about how you might act on these thoughts, or if you have a plan?",
         "goto_next_assessment": false,
         "unlikely_depression": false,
         "conclusion": null
-      }
+        }
     }
 
     """
