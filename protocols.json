@@ -1,0 +1,17 @@
+{
+  "PROTOCOL 1": [
+    "Provide psychoeducation to the person and their carers",
+    "Reduce stress and strengthen social supports",
+    "Promote functioning in daily activities and community life",
+    "Consider antidepressants",
+    "If available, consider referring the person for brief psychological treatments such as interpersonal therapy (IPT), cognitive behavioural therapy (CBT), behaviour activation, or problem-solving counselling",
+    "DO NOT manage the symptoms with ineffective treatments such as vitamin injections",
+    "Offer regular follow-up"
+  ],
+  "BIPOLAR PROTOCOL": [
+    "Consult a specialist",
+    "If a specialist is not immediately available, follow the treatment for depression (Protocol 1)",
+    "NEVER prescribe antidepressants alone without a mood stabilizer (such as lithium, carbamazepine, or valproate) because antidepressants can lead to mania in people with bipolar disorder",
+    "If symptoms of mania develop, tell the person and their carers to stop the antidepressant immediately and return for help"
+  ]
+}

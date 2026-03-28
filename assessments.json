@@ -1,0 +1,113 @@
+{
+  "1": {
+    "title": "Assessment 1: Does the person have depression?",
+    "branching_type": "sequential",
+    "questions": [
+      {
+        "id": 1,
+        "text": "Has the person had at least one of the following core symptoms of depression for at least 2 weeks? (Persistent depressed mood; markedly diminished interest in or pleasure from activities)",
+        "if_no": "State C: unlikely_depression=true",
+        "if_yes": "Move to Question 2"
+      },
+      {
+        "id": 2,
+        "text": "Has the person had several of the following additional symptoms for at least 2 weeks? (Disturbed sleep or sleeping too much, significant change in appetite or weight, beliefs of worthlessness or excessive guilt, fatigue or loss of energy, reduced concentration, indecisiveness, observable agitation or physical restlessness, talking or moving more slowly than usual, hopelessness, suicidal thoughts or acts)",
+        "if_no": "State C: unlikely_depression=true",
+        "if_yes": "Move to Question 3"
+      },
+      {
+        "id": 3,
+        "text": "Does the person have considerable difficulty with daily functioning in personal, family, social, educational, occupational or other areas?",
+        "if_no": "State C: unlikely_depression=true",
+        "if_yes": "State B: goto_next_assessment=true"
+      }
+    ]
+  },
+
+  "2": {
+    "title": "Assessment 2: Are there other possible explanations for the symptoms?",
+    "branching_type": "complex",
+    "notes": [
+      "Questions do NOT follow a simple yes/next pattern — follow branching exactly.",
+      "Q4 requires inferring from conversation whether a physical condition was identified AND treated.",
+      "Q6 has two levels of nested follow-up questions.",
+      "Three valid output states only: State A (next_question set), State B (goto_next_assessment=true), State C (unlikely_depression=true)."
+    ],
+    "questions": [
+      {
+        "id": 4,
+        "text": "Is this a physical condition that can resemble or exacerbate depression? (Signs/symptoms suggesting anaemia, malnutrition, hypothyroidism, mood changes from substance use or medication side-effects)",
+        "branching": {
+          "if_not_yet_explored": "State A: ask doctor to explore physical causes",
+          "if_yes_condition_found": {
+            "then": "State A: ask whether depressive symptoms remain after treatment",
+            "if_symptoms_resolved": "State C: unlikely_depression=true",
+            "if_symptoms_remain": "Move to Q5"
+          },
+          "if_no": "Move to Q5"
+        }
+      },
+      {
+        "id": 5,
+        "text": "Is there a history of mania? (Several of the following simultaneously for at least 1 week, severely enough to interfere with work/social activities or requiring hospitalisation: elevation of mood and/or irritability, decreased need for sleep, increased activity/talkativeness/rapid speech, impulsive or reckless behaviours, loss of normal social inhibitions, easily distracted, unrealistically inflated self-esteem)",
+        "branching": {
+          "if_not_yet_explored": "State A: ask about manic episodes",
+          "if_yes": "State A with next_question='[BIPOLAR PROTOCOL]' (sentinel — do not proceed to Q6)",
+          "if_no": "Move to Q6"
+        }
+      },
+      {
+        "id": 6,
+        "text": "Has there been a major loss (e.g. bereavement) within the last 6 months?",
+        "branching": {
+          "if_not_yet_explored": "State A: ask about major losses",
+          "if_no": "State B: goto_next_assessment=true",
+          "if_yes": {
+            "follow_up_1": {
+              "ask": "Are any of the following symptoms present? (Suicidal ideation, beliefs of worthlessness, psychotic symptoms, talking or moving more slowly than normal)",
+              "if_not_yet_asked": "State A: ask follow-up 1",
+              "if_yes": "State B: goto_next_assessment=true",
+              "if_no": {
+                "follow_up_2": {
+                  "ask": "Does the person have a previous history of depression?",
+                  "if_not_yet_asked": "State A: ask follow-up 2",
+                  "if_yes": "State B: goto_next_assessment=true",
+                  "if_no": "State C: unlikely_depression=true"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+
+  "3": {
+    "title": "Assessment 3: Are there concurrent priority MNS conditions?",
+    "branching_type": "open_clinical",
+    "notes": [
+      "No yes/no questions — open clinical judgment, suggest ONE sub-question at a time.",
+      "Priority order: (1) suicidal ideation, (2) suicide plan/intent/means, (3) substance use, (4) other MNS symptoms.",
+      "If imminent self-harm risk is detected → remain in State A, ask the most urgent clinical follow-up question (lethality, means, timeline). Do NOT use a sentinel. Keep asking one question at a time until the picture is clear.",
+      "If all four priority areas are covered and no imminent risk → State B: goto_next_assessment=true (proceed to Protocol 1 for Depression).",
+      "State C (unlikely_depression) is never used in this assessment.",
+      "No sentinel values are used in this assessment."
+    ],
+    "questions": [
+      {
+        "id": 7,
+        "text": "Are there concurrent priority MNS conditions?",
+        "sub_questions_priority_order": [
+          "Has the patient expressed any thoughts of harming themselves or ending their life?",
+          "Has the patient described any specific plan, means, or timeline for acting on these thoughts?",
+          "Is the patient currently using alcohol, drugs, or other substances regularly? Has use escalated recently?",
+          "Has the patient experienced any other significant psychiatric symptoms such as hallucinations, severe anxiety, or memory problems?"
+        ],
+        "branching": {
+          "if_imminent_risk": "State A: ask next urgent clinical safety question (do not exit track)",
+          "if_all_covered_no_risk": "State B: goto_next_assessment=true"
+        }
+      }
+    ]
+  }
+}
