@@ -1,0 +1,159 @@
+{
+    "conversation": [
+        {
+            "role": "doctor",
+            "content": "Come in, sit down. What's been going on?"
+        },
+        {
+            "role": "patient",
+            "content": "I've been having these really bad headaches. Like, almost every day for the past few weeks. It's not like a normal headache — it feels like something is squeezing my head from the outside. I've been really worried about it."
+        },
+        {
+            "role": "doctor",
+            "content": "I see. Where exactly do you feel it?"
+        },
+        {
+            "role": "patient",
+            "content": "Mostly at the top and sides. And my head just feels... heavy? Like it's full of something. Sometimes there's this pressure too, like it's going to burst. I don't know if that sounds dramatic."
+        },
+        {
+            "role": "doctor",
+            "content": "Not at all. Any changes to your vision?"
+        },
+        {
+            "role": "patient",
+            "content": "Yes, actually — that's one of the things that scared me. Sometimes everything goes a bit dark or hazy, especially when I stand up. And I've been getting dizzy a lot. Like the room tilts. It only lasts a few seconds but it keeps happening."
+        },
+        {
+            "role": "doctor",
+            "content": "How about your energy levels or sleep?"
+        },
+        {
+            "role": "patient",
+            "content": "I'm tired all the time, even when I haven't done much. I thought maybe it was just stress but... I don't know. My whole body feels heavy sometimes too. Is that related?"
+        },
+        {
+            "role": "doctor",
+            "content": "It could be. Have you noticed anything else — any sounds or sensations in your head?"
+        },
+        {
+            "role": "patient",
+            "content": "There's this buzzing in my ears sometimes. It comes and goes. And my eyes have been burning a bit, which is new. I keep thinking something is really wrong, I've been reading things online and I know I shouldn't but—"
+        },
+        {
+            "role": "doctor",
+            "content": "Try not to worry too much about that for now. You did the right thing coming in."
+        }
+    ],
+    "conversation": [
+        {
+            "role": "doctor",
+            "content": "So what brings you in today?"
+        },
+        {
+            "role": "patient",
+            "content": "Honestly it's probably nothing. My wife made me come. I've just been a bit tired lately, that's all."
+        },
+        {
+            "role": "doctor",
+            "content": "How long has that been going on?"
+        },
+        {
+            "role": "patient",
+            "content": "A few months maybe? I don't know, I've been busy with work. Everyone's tired, right. I just can't seem to shake it. Even on weekends when I'm not doing anything I still feel completely drained."
+        },
+        {
+            "role": "doctor",
+            "content": "Any pain or discomfort anywhere?"
+        },
+        {
+            "role": "patient",
+            "content": "There's been some chest stuff but I think it's just indigestion or whatever. Sometimes it feels tight, like a pressure. It passes. And my legs ache a bit but I'm not as young as I used to be, so."
+        },
+        {
+            "role": "doctor",
+            "content": "Has your heart ever felt like it was pounding or racing?"
+        },
+        {
+            "role": "patient",
+            "content": "Once or twice, yeah. It was probably just coffee. Actually it happened at rest the other night which was a bit weird but it only lasted a minute. I didn't think much of it."
+        },
+        {
+            "role": "doctor",
+            "content": "Do you sweat a lot, or notice your hands going cold or clammy?"
+        },
+        {
+            "role": "patient",
+            "content": "I mean, I do sweat more than I used to. My palms get sweaty sometimes for no reason. And my hands and feet go cold even when it's not that cold out. But that's just me I think, I've always been like that."
+        },
+        {
+            "role": "doctor",
+            "content": "Any shaking or trembling at all?"
+        },
+        {
+            "role": "patient",
+            "content": "A little, sometimes. In the mornings mostly. Look, I'm sure it's just stress from work, I don't want to waste your time."
+        },
+        {
+            "role": "doctor",
+            "content": "You're not wasting my time at all. I'd like to run some checks."
+        }
+    ]
+}
+// after the first recommendation
+
+{
+    "Doctor": "How would you describe your mood over the past few weeks? Have you noticed any change in your interest in things you usually enjoy?",
+    "Patient": "Honestly... not great. I've just felt really flat. Things I used to look forward to — even just watching a series in the evening or meeting friends — I just can't be bothered anymore. It's like the motivation isn't there. I thought it was because of the headaches making everything harder, but even on days when my head isn't too bad, I still just feel... empty, I guess."
+}
+//second 
+
+
+            "role": "doctor",
+            "content": "You mentioned feeling tired all the time — have you also noticed any changes in your sleep, your appetite, or your ability to concentrate?"
+        },
+        {
+            "role": "patient",
+            "content": "Sleep is all over the place, honestly. Some nights I just lie there for hours and can't switch my brain off, and other nights I'll sleep for nine or ten hours and still wake up exhausted. Food-wise... I've kind of lost interest in eating. I'll skip meals without even realising. And concentrating — yes, that's been really bad actually. At work I'll read the same sentence three or four times and it just doesn't go in. My manager mentioned it last week, which scared me a bit."
+        }
+
+//third
+
+{
+            "role": "doctor",
+            "content": "Before we go further — have you ever been told you have any physical conditions, like an underactive thyroid or anaemia? Or could any of this be related to medication you're taking or changes in your diet?"
+        },
+        {
+            "role": "patient",
+            "content": "Not that I know of. I'm not on any regular medication, and I've never been diagnosed with anything like that. I did have blood tests done maybe eight or nine months ago and everything was fine then. I haven't really changed my diet either, though I suppose I have been eating less lately like I said. Could that be causing all of this?"
+        }
+
+//fourth
+{
+            "role": "doctor",
+            "content": "I want to ask you something a bit different now. Have you ever gone through a period where your mood was unusually high or you felt a sudden surge of energy — maybe feeling like you needed very little sleep, or were much more talkative or impulsive than normal? Something that lasted at least a week or so?"
+        },
+        {
+            "role": "patient",
+            "content": "No, nothing like that. If anything it's always been the opposite — I've always leaned towards being more quiet and low rather than the other way around. I've never had a phase where I felt on top of the world or out of control like that."
+        }
+//fifth
+
+{
+            "role": "doctor",
+            "content": "Has anything significant happened in your life over the past six months — a major loss, like losing someone close to you, or a big life change?"
+        },
+        {
+            "role": "patient",
+            "content": "No, nothing like that. No bereavements or anything. Things have been pretty stable on that front — same job, same flat, same people around me. Nothing I can point to and say 'that's when it started.' That's almost what makes it worse, honestly. There's no obvious reason for feeling this way."
+        }
+
+//got next assessment
+{
+  "result": {
+    "next_question": null,
+    "goto_next_assessment": true,
+    "unlikely_depression": false,
+    "conclusion": "DEPRESSION is likely."
+  }
+}
