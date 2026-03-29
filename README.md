@@ -1,4 +1,5 @@
 # SomaScribe
+<img src="frontend/public/somascribelogo.svg" alt="SomaScribe Logo" width="220" />
 
 **AI-Assisted Somatic Depression Screener for South Asian Communities**
 
@@ -19,81 +20,6 @@ South Asian patients do not merely hide depression; they express it through a di
 Pakistani women in the UK consult GPs more frequently than White counterparts but are less likely to receive treatment for depression — a gap attributed directly to the limitations of tools built on criteria that do not reflect South Asian presentations.
 
 ---
-
-## Clinical Framework
-
-### Bradford Somatic Inventory (BSI)
-
-SomaScribe uses the [BSI (Mumford et al., 1991)](https://pubmed.ncbi.nlm.nih.gov/2036538/) as its core detection schema — a 44-item instrument developed from psychiatric case notes of South Asian patients, constructed simultaneously in Urdu and English, and validated across clinical sites in the UK, Pakistan, India, and Nepal. Factor analysis yields four principal clusters: **Head, Chest, Abdomen, and Fatigue**, replicated across British, Pakistani, and Turkish populations (75% sensitivity, 75% specificity against [DSM III-R](https://www.psychiatry.org/psychiatrists/practice/dsm)).
-
-Multi-cluster flagging is intentional: a single-system somatic complaint has a higher prior probability of physical aetiology. A diffuse, multi-system pattern across two or more BSI clusters is the clinical hallmark of somatised psychological distress.
-
-### WHO mhGAP
-
-When a multi-cluster pattern triggers an alert, SomaScribe surfaces follow-up questions derived from the [WHO Mental Health Gap Action Programme Intervention Guide (mhGAP-IG)](https://www.who.int/publications/i/item/9789241549790), specifically the **OTH** (Other Significant Emotional or Medically Unexplained Somatic Complaints) and **DEP** (Depression) modules — designed for non-specialist primary care settings and [deployed in over 90 countries](https://www.who.int/teams/mental-health-and-substance-use/treatment-care/mental-health-gap-action-programme).
-
----
-
-## Technical Architecture
-
-### Pipeline Overview
-
-SomaScribe processes a consultation transcript through a three-stage [DSPy](https://dspy.ai/) pipeline:
-
-| Stage | Function |
-|---|---|
-| **Stage 1 — Somatic Extraction** | [DSPy](https://dspy.ai/) NER signature identifies physical complaint spans in free-form transcript text. Returns verbatim phrase and character index. No interpretation at this stage. |
-| **Stage 2 — BSI Cluster Mapping** | Each extracted mention is mapped to the nearest [BSI](https://pubmed.ncbi.nlm.nih.gov/2036538/) item across four clusters (Head, Chest, Abdomen, Fatigue) plus BJPsych 2025 extended signals. Returns cluster assignment and confidence score. |
-| **Stage 3 — Alert + Bridge Generation** | Cluster scores are assessed against flagging rules (no LLM). If the threshold is met, the [mhGAP](https://www.who.int/publications/i/item/9789241549790) OTH and DEP templates are passed to a DSPy module that generates culturally-sensitive bridge questions using the patient's own vocabulary. |
-
-### Why DSPy
-
-Rather than RAG, SomaScribe uses **[DSPy (Declarative Self-improving Python)](https://dspy.ai/)** — a [Stanford NLP](https://nlp.stanford.edu/) framework that compiles natural-language module signatures into optimised prompts and structured pipelines. DSPy abstracts brittle prompt strings into modular Python code and uses optimisers ([BootstrapFewShot](https://dspy.ai/learn/optimization/optimizers/), [MIPROv2](https://dspy.ai/learn/optimization/optimizers/)) to systematically improve prompt quality against a defined metric.
-
-Each DSPy signature in the pipeline:
-- `transcript_text → list[somatic_mention]`
-- `somatic_mention → {cluster, confidence, bsi_item_id}`
-- `{triggered_clusters, patient_verbatim, mhgap_template} → list[bridge_question]`
-
-This produces a transparent, fully auditable pipeline — a clinician or governance body can inspect every module, its inputs, its outputs, and the examples used to optimise it.
-
-### Alert Threshold Logic
-
-- **Single cluster, fewer than 4 items** — No alert. Single-system somatic complaints carry a higher prior probability of physical aetiology.
-- **Single cluster, 4 or more items** — Alert. High symptom density in one cluster warrants further enquiry.
-- **Multi-cluster (2+ BSI clusters, any item count)** — Alert. Diffuse multi-system pattern is inconsistent with single-organ physical aetiology.
-
-There is one flag type; no colour-coded severity tiers. The GP can dismiss any alert at any point.
-
-### SMART on FHIR Integration
-
-SomaScribe is designed as a **[SMART on FHIR](https://smarthealthit.org/) [CDS Hooks](https://cds-hooks.org/) application**, making it EHR-agnostic ([Epic](https://www.epic.com/), [Cerner](https://www.oracle.com/health/), [Allscripts](https://www.allscripts.com/), and any [FHIR](https://hl7.org/fhir/)-compliant system). The GP sees the SomaScribe panel embedded in their existing EHR interface with no separate login or workflow change. The FHIR integration pathway:
-
-1. GP opens a patient encounter → [CDS Hooks](https://cds-hooks.org/) fires a consultation-start event
-2. SomaScribe receives encounter context via [FHIR APIs](https://hl7.org/fhir/)
-3. As the consultation note is typed or transcribed, the pipeline processes text and returns a [CDS card](https://cds-hooks.org/specification/current/#cds-cards) with the flag and bridge questions if the threshold is met
-
-### Current Model
-
-The current implementation uses the **[Gemini API](https://ai.google.dev/)** (`gemini/gemini-2.5-flash`) accessed through [DSPy's LM abstraction layer](https://dspy.ai/learn/programming/language_models/). For clinical deployment, all inference would be self-hosted — DSPy's model-agnostic architecture allows recompilation against a self-hosted [Gemma](https://ai.google.dev/gemma) or open-weight [Llama](https://llama.meta.com/) variant by changing only the LM configuration.
-
-The transcription layer uses [WhisperX](https://github.com/m-bain/whisperX) for audio transcription, alignment, and speaker diarization, with audio conversion handled by [ffmpeg](https://ffmpeg.org/).
-
----
-
-## Repository Structure
-
-```
-somascribe/
-├── frontend/       # React application — GP-facing interface
-│   └── README.md   # Frontend setup and development guide
-├── backend/        # FastAPI backend — transcription, analysis, assessment pipeline
-│   └── README.md   # Backend setup and API reference
-└── README.md       # This file
-```
-
----
-
 ## Quick Start
 
 ### Prerequisites
@@ -147,7 +73,6 @@ curl http://localhost:8000/api/health
 # Expected: {"status":"ok"}
 ```
 
-For the full backend API reference, see [`backend/README.md`](./backend/README.md).
 
 ### 3. Set up the frontend
 
@@ -157,9 +82,126 @@ npm install
 npm run dev
 ```
 
-For the full frontend setup and component guide, see [`frontend/README.md`](./frontend/README.md).
 
 ---
+
+## Clinical Framework
+
+### Bradford Somatic Inventory (BSI)
+
+SomaScribe uses the [BSI (Mumford et al., 1991)](https://pubmed.ncbi.nlm.nih.gov/2036538/) as its core detection schema — a 44-item instrument developed from psychiatric case notes of South Asian patients, constructed simultaneously in Urdu and English, and validated across clinical sites in the UK, Pakistan, India, and Nepal. Factor analysis yields four principal clusters: **Head, Chest, Abdomen, and Fatigue**, replicated across British, Pakistani, and Turkish populations (75% sensitivity, 75% specificity against [DSM III-R](https://www.psychiatry.org/psychiatrists/practice/dsm)).
+
+Multi-cluster flagging is intentional: a single-system somatic complaint has a higher prior probability of physical aetiology. A diffuse, multi-system pattern across two or more BSI clusters is the clinical hallmark of somatised psychological distress.
+
+### WHO mhGAP
+
+When a multi-cluster pattern triggers an alert, SomaScribe surfaces follow-up questions derived from the [WHO Mental Health Gap Action Programme Intervention Guide (mhGAP-IG)](https://www.who.int/publications/i/item/9789241549790), specifically the **OTH** (Other Significant Emotional or Medically Unexplained Somatic Complaints) and **DEP** (Depression) modules — designed for non-specialist primary care settings and [deployed in over 90 countries](https://www.who.int/teams/mental-health-and-substance-use/treatment-care/mental-health-gap-action-programme).
+
+---
+
+## Technical Architecture
+
+### System Overview
+
+SomaScribe processes a patient consultation transcript through a **three-stage pipeline**: somatic extraction, BSI cluster mapping, and bridge question generation. The pipeline is built on **DSPy** — a declarative framework for *programming*, rather than *prompting*, language models.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     SomaScribe Frontend                         │
+│                     (React + Vite SPA)                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────────┐   ┌───────────────────┐   ┌───────────────┐   │
+│  │  Home Screen  │──▶│  Live Session    |──▶│ Post-Session │   │
+│  │  (Setup)      │   │  Dashboard       │   │ Summary       │   │
+│  └──────────────┘   └───────┬───────────┘   └───────────────┘   │
+│                             │                                   │
+│                   ┌─────────▼─────────┐                         │
+│                   │  Clinical         │                         │
+│                   │  Intelligence     │                         │
+│                   │  Panel            │                         │
+│                   └─────────┬─────────┘                         │
+│                             │                                   │
+└─────────────────────────────┼───────────────────────────────────┘
+                              │ HTTP REST
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   SomaScribe Backend                            │
+│                   (FastAPI + DSPy Pipeline)                     │
+├─────────────────────────────────────────────────────────────────┤
+│  POST /transcribe            – Audio → Text (WhisperX)          │
+│  POST /api/analyze-symptoms  – BSI cluster analysis             │
+│  POST /api/suggest-next-question – mhGAP bridge questions       │
+│  POST /api/get_protocol      – Clinical protocol steps          │
+└──────────────────┬──────────────────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                DSPy Three-Stage Pipeline                        │
+├────────────────┬────────────────────┬───────────────────────────┤
+│ Stage 1:       │ Stage 2:           │ Stage 3:                  │
+│ Somatic        │ BSI Cluster        │ Alert + Bridge            │
+│ Extraction     │ Mapping            │ Question Generation       │
+│                │                    │                           │
+│ transcript →   │ somatic_mention →  │ {clusters, verbatim,      │
+│ list[mention]  │ {cluster,          │  mhgap_template} →        │
+│                │  confidence,       │ list[bridge_question]     │
+│                │  bsi_item_id}      │                           │
+└────────────────┴────────────────────┴───────────────────────────┘
+```
+
+### DSPy Pipeline
+
+Rather than retrieval-augmented generation (RAG), SomaScribe uses **DSPy** (Declarative Self-improving Python), a Stanford NLP framework that compiles natural-language module signatures into structured pipelines. For SomaScribe, this means:
+
+- **Somatic extraction** is a DSPy Signature: `transcript_text → list[somatic_mention]`
+- **BSI cluster mapping** is a second Signature: `somatic_mention → {cluster, confidence, bsi_item_id}`
+- **Bridge question generation** is a third Signature: `{triggered_clusters, patient_verbatim, mhgap_template} → list[bridge_question]`
+
+This produces a **transparent, auditable pipeline** — a clinician or regulator can inspect every module, its inputs, and its outputs. There are no black-box embeddings or opaque retrieval steps.
+
+### The Three-Stage Pipeline
+
+| Stage | Function | Details |
+|---|---|---|
+| **Stage 1: Somatic Extraction** | DSPy NER signature identifies physical complaint spans in free-form transcript text | Returns verbatim phrase and character index. No interpretation at this stage. |
+| **Stage 2: BSI Cluster Mapping** | Each extracted mention is mapped to the nearest BSI item across four clusters | Returns cluster assignment (Head, Chest, Abdomen, Fatigue) plus BJPsych 2025 extended signals, with confidence score. |
+| **Stage 3: Alert + Bridge Generation** | Cluster scores assessed against flagging rules (no LLM). If threshold met, mhGAP templates passed to DSPy module | Generates culturally-sensitive bridge questions using the patient's own vocabulary. |
+
+### Alert Threshold Logic
+
+The flagging logic is deliberately conservative and transparent:
+
+- **Single-cluster, < 4 items:** No alert. Single-system complaints carry a higher prior probability of physical aetiology.
+- **Single-cluster, ≥ 4 items:** Alert. High density in one cluster warrants further enquiry.
+- **Multi-cluster (2+ BSI clusters, any count):** Alert. Diffuse multi-system somatic pattern detected — the primary signal SomaScribe is designed to detect.
+
+The system produces a **single alert type** — there is no tiered colour severity. When the alert fires, the GP is shown the flag and bridge questions. **The GP may dismiss any alert at any point; the system never overrides clinical judgement.**
+
+### Data Strategy and Synthetic Dataset
+
+The ideal dataset — unredacted GP consultation transcripts from South Asian patients presenting with somatic symptoms — does not currently exist as a publicly available resource. For the hackathon demonstration, a hybrid data strategy is used:
+
+- **BSI knowledge base:** The 44 BSI items reconstructed from open-access validation studies, encoded as a structured JSON dictionary with example utterances in English and transliterated Urdu/Punjabi.
+- **Synthetic transcripts:** 30–50 transcripts generated using a constrained meta-prompt, reserved as a clean demo set.
+
+> **Acknowledgement:** Synthetic data is a demonstration-grade solution, not a production-grade one. Production would require prospective data collection under clinical governance, with proper patient consent and ethical approval.
+
+### Current Model and Self-Hosting
+
+The current implementation uses the **Gemini API** as the underlying language model, accessed through the DSPy LM abstraction layer. For any real-world clinical deployment, all model inference would be **self-hosted** to ensure no patient-identifiable data leaves a controlled clinical environment. DSPy's model-agnostic architecture means the pipeline can be recompiled against a self-hosted **Gemma** or open-weight **Llama** variant without changes to the module logic.
+
+---
+
+## Repository Structure
+
+```
+somascribe/
+├── frontend/       # React application — GP-facing interface
+├── backend/        # FastAPI backend — transcription, analysis, assessment pipeline
+└── README.md       
+```
+
 
 ## Backend API Summary
 
@@ -175,20 +217,12 @@ Built with [FastAPI](https://fastapi.tiangolo.com/) and served via [Uvicorn](htt
 
 ---
 
-## Frontend Interface
-
-Built with [React](https://react.dev/) and bootstrapped with [Vite](https://vitejs.dev/). The GP interface uses a two-panel layout:
-
-- **Left panel** — Live consultation dialogue transcribed in real time. Somatic complaint phrases are underlined in cluster-specific colours as the [DSPy](https://dspy.ai/) extraction pipeline identifies them, giving the GP a live annotated view of which symptom domains have been mentioned.
-- **Right panel** — Initially blank. When the flagging threshold is met, a single flag card appears describing the somatic pattern and presenting the [mhGAP](https://www.who.int/publications/i/item/9789241549790)-derived bridge questions. The GP can dismiss the flag at any point.
-
----
 
 ## Ethical Boundaries
 
 SomaScribe operates exclusively within the boundary of clinical decision support. It produces no diagnosis, no treatment recommendation, and no referral. The patient is never shown the alert. Alert language avoids psychiatric framing — describing a *multi-system somatic pattern* rather than *possible depression*. Bridge questions use the patient's own physical vocabulary; they do not introduce psychological framing.
 
-[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is currently open (`allow_origins=["*"]`) in `app.py` — tighten this before any production deployment. For production use, all model inference must be self-hosted and data processing agreements must comply with relevant healthcare data governance frameworks ([NHS Data Security and Protection Toolkit](https://www.dsptoolkit.nhs.uk/), [HIPAA](https://www.hhs.gov/hipaa/index.html), or local equivalent).
+For production use, all model inference must be self-hosted and data processing agreements must comply with relevant healthcare data governance frameworks ([NHS Data Security and Protection Toolkit](https://www.dsptoolkit.nhs.uk/), [HIPAA](https://www.hhs.gov/hipaa/index.html), or local equivalent).
 
 ---
 
@@ -206,3 +240,11 @@ SomaScribe operates exclusively within the boundary of clinical decision support
 ## Disclaimer
 
 This system is for structured screening support and workflow assistance. It is not a standalone diagnostic system, not an emergency triage substitute, and not a replacement for trained clinician assessment, local treatment protocols, or immediate safety procedures.
+
+---
+
+## The Team
+
+- Swastik Aryal
+- Aashish Adhikari
+- Rikesh Panta

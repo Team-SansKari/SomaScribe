@@ -12,8 +12,8 @@ import dspy
 import subprocess
 import tempfile
 
-from depression_checker import suggest_next_question
-from symptom_analyser import (
+from utils.depression_checker import suggest_next_question
+from utils.symptom_analyser import (
     SymptomAnalyzer,
     _format_conversation,
     possible_depression,
@@ -317,7 +317,7 @@ async def get_protocol(payload: GetProtocolRequest):
     """
 
     try:
-        with open("protocols.json", "r") as f:
+        with open("utils/protocols.json", "r") as f:
             protocols = json.load(f)
 
         protocol_steps = protocols.get(payload.protocol_name)

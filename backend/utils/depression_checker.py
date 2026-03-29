@@ -2,7 +2,7 @@ import json
 import dspy
 
 # ── Load assessments from JSON ─────────────────────────────────────────────────
-with open("assessments.json", "r") as f:
+with open("utils/assessments.json", "r") as f:
     ASSESSMENTS: dict = json.load(f)
 
 
@@ -286,9 +286,10 @@ def suggest_next_question(
 # ── Quick demo ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import dotenv
+
     api_key = dotenv.get_key(".env", "API_KEY")
 
-# Configure DSPy with Gemini
+    # Configure DSPy with Gemini
     lm = dspy.LM(model="gemini/gemini-2.5-flash", api_key=api_key)
     dspy.configure(lm=lm)
 
