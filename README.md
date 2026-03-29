@@ -3,7 +3,7 @@
 
 **AI-Assisted Somatic Depression Screener for South Asian Communities**
 
-SomaScribe is an AI clinical co-pilot that closes a documented diagnostic gap in primary care: South Asian patients experiencing depression who present exclusively through physical complaints are routinely missed by every standard Western screening instrument ([PHQ-9](https://www.phqscreeners.com/select-screener), [GAD-7](https://www.phqscreeners.com/select-screener), [HADS](https://www.sciencedirect.com/science/article/abs/pii/0001691B80901440)), because those tools were built on criteria that do not reflect South Asian presentations of psychological distress.
+SomaScribe is an AI clinical co-pilot that closes a documented diagnostic gap in primary care: South Asian patients experiencing depression who present exclusively through physical complaints are routinely missed by every standard Western screening instrument ([PHQ-9](https://www.phqscreeners.com/select-screener)), because those tools were built on criteria that do not reflect South Asian presentations of psychological distress.
 
 SomaScribe listens to GP–patient consultation transcripts, extracts somatic complaints using a [DSPy](https://dspy.ai/)-optimised language model pipeline, maps them against the validated four-cluster framework of the [Bradford Somatic Inventory (BSI)](https://pubmed.ncbi.nlm.nih.gov/2036538/), and flags cases where a multi-cluster somatic pattern is detected. When flagged, it surfaces culturally-sensitive follow-up questions derived from the [WHO mhGAP Intervention Guide](https://www.who.int/publications/i/item/9789241549790) to help the GP probe further.
 
