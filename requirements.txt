@@ -1,3 +1,7 @@
 fastapi>=0.116.0
 uvicorn[standard]>=0.35.0
 python-dotenv>=1.0.0
+dspy-ai>=2.6.0
+whisperx>=3.3.0
+torch>=2.2.0
+python-multipart>=0.0.9
