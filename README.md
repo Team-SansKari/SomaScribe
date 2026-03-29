@@ -1,6 +1,6 @@
 # SomaScribe Backend Guide
 
-This fodler contanins backend services for:
+This repository contains backend services for:
 
 - audio transcription + speaker diarization for doctor/patient conversations,
 - somatic symptom analysis from conversation text,
